@@ -1,5 +1,4 @@
-import { mockRequest } from '../request';
-
+import { request, mockRequest } from '@/service/request';
 /**
  * 获取验证码
  * @param phone - 手机号
@@ -38,4 +37,11 @@ export function fetchUserRoutes(userId: string) {
  */
 export function fetchUpdateToken(refreshToken: string) {
   return mockRequest.post<ApiAuth.Token>('/updateToken', { refreshToken });
+}
+
+// 测试获取列表
+export function getList(params: object) {
+  return request.get('/bmsup/bmsFile/listBmsFile', {
+    params
+  });
 }

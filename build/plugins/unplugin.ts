@@ -4,6 +4,7 @@ import Components from 'unplugin-vue-components/vite';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import AutoImport from 'unplugin-auto-import/vite';
 import { getSrcPath } from '../utils';
 
 export default function unplugin(viteEnv: ImportMetaEnv) {
@@ -39,6 +40,25 @@ export default function unplugin(viteEnv: ImportMetaEnv) {
       symbolId: `${VITE_ICON_LOCAL_PREFIX}-[dir]-[name]`,
       inject: 'body-last',
       customDomId: '__SVG_ICON_LOCAL__'
+    }),
+    AutoImport({
+      imports: [
+        'vue', // 导入内置的所有api
+        'vue-router',
+        'pinia',
+        '@vueuse/core',
+        {
+          'vue-router': ['createRouter'] // 导入指定的api
+          /* 自定义模块 */
+          // '@/hooks/api.ts': ['defineApi'], // 导入指定文件下的指定api
+          // '@/api/index.ts': [['*', 'api']], // 导入指定文件下的api，并重命名
+          // '@/store/index.ts': [['*', 'store']]
+        }
+      ],
+      include: [/\.[tj]sx?$/, /\.vue$/],
+      eslintrc: {
+        enabled: true // <-- this
+      }
     })
   ];
 }

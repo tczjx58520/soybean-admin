@@ -109,16 +109,15 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
   const columns = ref(config.columns()) as Ref<HookTableColumn<TableData>[]>;
 
   const requestParams = ref(apiParams) as Ref<HookTableConfig<TableData, Fn>['apiParams']>;
-
   function updateRequestParamsByPagination(p: PagePropsOfPagination) {
     requestParams.value = apiParamsUpdater({ ...requestParams.value, ...p });
   }
-
   const pagination = reactive({
     page: 1,
-    pageSize: 10,
+    pageSize: 5,
     showSizePicker: true,
-    pageSizes: [10, 15, 20, 25, 30],
+    itemCount: 23,
+    pageSizes: [5, 10, 15, 50],
     onChange: (page: number) => {
       pagination.page = page;
 
@@ -137,22 +136,18 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
 
   function updatePagination(update: Partial<PaginationProps>) {
     Object.assign(pagination, update);
-
     updateRequestParamsByPagination({ page: pagination.page, pageSize: pagination.pageSize });
   }
 
   async function getData() {
     startLoading();
-
     const { data: apiData, error } = await apiFn(requestParams.value);
 
     if (!error && data) {
       const { data: tableData, pageNum, pageSize, total } = transformer(apiData);
-
       updateData(tableData);
 
       setEmpty(tableData.length === 0);
-
       updatePagination({ page: pageNum, pageSize, itemCount: total });
     }
 
