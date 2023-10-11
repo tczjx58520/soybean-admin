@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+import type { DataTableColumns } from 'naive-ui';
 import { $t } from '@/locales';
 import useHookTable from '@/hooks/business/use-hook-table';
 defineOptions({ name: 'NwowTable' });
@@ -15,7 +16,7 @@ defineOptions({ name: 'NwowTable' });
  */
 interface Props {
   /** JsonSchema */
-  schema: object;
+  schema: any;
   /** 请求数据Promise */
   apiFun: void;
   /** 请求数据Promise的参数 */
@@ -24,17 +25,12 @@ interface Props {
   actionColumns?: object;
 }
 
-interface columnItem {
-  title: string;
-  key: string | number;
-}
-
 const props = defineProps<Props>();
 const ColumnsFun = () => {
   // 获取表头值
   const keyArr = Object.keys(props.schema.properties);
-  let columnsTemp: columnItem[] = keyArr.map((item: string) => {
-    const cItem: columnItem = {
+  let columnsTemp: DataTableColumns = keyArr.map((item: string) => {
+    const cItem = {
       title: $t(props.schema.properties[item].title),
       key: item
     };
@@ -50,7 +46,13 @@ const ColumnsFun = () => {
   }
   return columnsTemp;
 };
-const transformerFun = data => {
+interface apiType {
+  list: Array;
+  pageNum: number;
+  pageSize: number;
+  totalCount: string;
+}
+const transformerFun = (data: apiType) => {
   return {
     data: data.list,
     pageNum: data.pageNum,

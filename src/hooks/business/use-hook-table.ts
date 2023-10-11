@@ -116,7 +116,6 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
     page: 1,
     pageSize: 5,
     showSizePicker: true,
-    itemCount: 23,
     pageSizes: [5, 10, 15, 50],
     onChange: (page: number) => {
       pagination.page = page;
